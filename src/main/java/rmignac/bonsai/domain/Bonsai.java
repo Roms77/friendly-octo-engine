@@ -1,33 +1,22 @@
-package rmignac.bonsai;
+package rmignac.bonsai.domain;
 
-import org.hibernate.annotations.GenericGenerator;
+import rmignac.bonsai.exposition.BonsaiDto;
+import rmignac.bonsai.infrastructure.BonsaiEntity;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(name="bonsai")
-@Table(name="bonsai")
-public class BonsaiEntity {
+public class Bonsai {
 
-    @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name="id")
     private UUID id;
-    @Column(name="name")
     private String nom;
-    @Column(name="species")
     private String species;
-    @Column(name="acquisition_date")
     private Date acquisition_date;
-    @Column(name="acquisition_age")
     private int acquisition_age;
-    @Column(name="status")
     private String status;
 
 
-    public BonsaiEntity() {
+    public Bonsai() {
     }
 
     public UUID getId() {
@@ -77,4 +66,6 @@ public class BonsaiEntity {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 }
