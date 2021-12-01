@@ -1,8 +1,5 @@
 package rmignac.bonsai.domain;
 
-import rmignac.bonsai.exposition.BonsaiDto;
-import rmignac.bonsai.infrastructure.BonsaiEntity;
-
 import java.util.Date;
 import java.util.UUID;
 

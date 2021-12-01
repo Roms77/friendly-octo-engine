@@ -1,6 +1,5 @@
 package rmignac.bonsai.infrastructure;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import rmignac.bonsai.domain.Bonsai;
 
@@ -12,9 +11,9 @@ import java.util.UUID;
 @Component
 public class BonsaiRepository {
 
-    private BonsaiDao bonsaiDao;
+    private BonsaiDAO bonsaiDao;
 
-    public BonsaiRepository(BonsaiDao bonsaiDao){
+    public BonsaiRepository(BonsaiDAO bonsaiDao){
         this.bonsaiDao=bonsaiDao;
     }
 

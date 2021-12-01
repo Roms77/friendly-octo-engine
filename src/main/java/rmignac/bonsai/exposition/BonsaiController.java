@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import rmignac.bonsai.domain.BonsaiService;
 
 
+import java.net.URI;
 import java.util.*;
 
 @RestController
@@ -20,57 +21,27 @@ public class BonsaiController {
     }
 
 
-    //@RequestMapping(method = RequestMethod.GET, path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-//    @GetMapping("/")
-//    //public List<BonsaiEntity> getBonsai(@RequestParam(required = false) String status, @RequestParam(required = false) String acquisition_age, @RequestParam(required = false) String direction){
-//    public List<BonsaiDto> getBonsai(@RequestParam(required = false, name="status") String status, @RequestParam(required=false, name="acquisition_age") String acquisition_age){
-//
-//        List<BonsaiDto> liste_bonsai = null;
-//        //BonsaiEntity bonsai = new BonsaiEntity();
-//
-//        if(status != null){
-//            liste_bonsai = bonsaiDao.findAllWithStatus(status);
-//            //bonsaiEntityStream = bonsaiEntityStream.filter(BonsaiEntity -> BonsaiEntity.getStatus().equals(status));
-//        }else{
-//            liste_bonsai=bonsaiDao.findAll();
-//        }
-////        if(acquisition_age != null){
-////            try{
-////                int age = Integer.valueOf(acquisition_age);
-////                //liste_bonsai = bonsaiDao.findAllOlderByAge(age);
-////                //bonsaiEntityStream= bonsaiEntityStream.filter(BonsaiEntity -> BonsaiEntity.getAcquisition_age()>=age);
-////            }catch (NumberFormatException e){
-////
-////            }
-////        }
-//        //liste_bonsai= bonsaiDao.findAll();
-//
-//        return liste_bonsai;//bonsaiEntityStream.collect(Collectors.toList());
-//    }
-    //@RequestMapping(method = RequestMethod.GET, path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-
-
     @GetMapping("/")
-    public List<BonsaiDto> getAllBonsai(){
-        List<BonsaiDto> listeBonsaiDto = new ArrayList<>();
-        bonsaiService.findAll().forEach(b-> listeBonsaiDto.add(BonsaiDto.fromBonsai(b)));
-        return listeBonsaiDto;
+    public List<BonsaiDTO> getAllBonsai(){
+        List<BonsaiDTO> listeBonsaiDTO = new ArrayList<>();
+        bonsaiService.findAll().forEach(b-> listeBonsaiDTO.add(BonsaiDTO.fromBonsai(b)));
+        return listeBonsaiDTO;
     }
     @GetMapping("/{id}")
-    public ResponseEntity<BonsaiDto> getBonsaiById(@PathVariable String id){
-        Optional<BonsaiDto> bonsaiDto;
+    public ResponseEntity<BonsaiDTO> getBonsaiById(@PathVariable String id){
+        Optional<BonsaiDTO> bonsaiDto;
         try{
-             bonsaiDto = bonsaiService.findById(UUID.fromString(id)).map(b-> BonsaiDto.fromBonsai(b));
+             bonsaiDto = bonsaiService.findById(UUID.fromString(id)).map(b-> BonsaiDTO.fromBonsai(b));
             if(bonsaiDto.isPresent()){
                 return ResponseEntity.ok(bonsaiDto.get());
             }else{
-                bonsaiDto = bonsaiService.findByName(id).map(b-> BonsaiDto.fromBonsai(b));
+                bonsaiDto = bonsaiService.findByName(id).map(b-> BonsaiDTO.fromBonsai(b));
                 if(bonsaiDto.isPresent()){
                     return ResponseEntity.ok(bonsaiDto.get());
                 }
             }
         }catch (IllegalArgumentException e){
-            bonsaiDto = bonsaiService.findByName(id).map(b-> BonsaiDto.fromBonsai(b));
+            bonsaiDto = bonsaiService.findByName(id).map(b-> BonsaiDTO.fromBonsai(b));
             if(bonsaiDto.isPresent()){
                 return ResponseEntity.ok(bonsaiDto.get());
             }
@@ -78,7 +49,7 @@ public class BonsaiController {
         if(bonsaiDto.isPresent()){
             return ResponseEntity.ok(bonsaiDto.get());
         }else{
-            bonsaiDto = bonsaiService.findByName(id).map(b-> BonsaiDto.fromBonsai(b));
+            bonsaiDto = bonsaiService.findByName(id).map(b-> BonsaiDTO.fromBonsai(b));
             if(bonsaiDto.isPresent()){
                 return ResponseEntity.ok(bonsaiDto.get());
             }
@@ -89,31 +60,30 @@ public class BonsaiController {
 
 
     @PostMapping
-    public ResponseEntity<BonsaiDto> create(@RequestBody BonsaiDto bonsaiDto){
-        BonsaiDto newbonsaiDto = BonsaiDto.fromBonsai(bonsaiService.save(bonsaiDto.toBonsai()));
+    public ResponseEntity<BonsaiDTO> create(@RequestBody BonsaiDTO bonsaiDto){
+        BonsaiDTO newbonsaiDTO = BonsaiDTO.fromBonsai(bonsaiService.save(bonsaiDto.toBonsai()));
         if(bonsaiDto.getNom() == null){
             return ResponseEntity.badRequest().build();
         }
-         //   return ResponseEntity.created(new URI("/bonsai"));
-        return new ResponseEntity<>(newbonsaiDto, HttpStatus.CREATED);
+        return ResponseEntity.created(URI.create("/bonsai/"+bonsaiDto.getId())).build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BonsaiDto> update(@RequestBody BonsaiDto bonsaiDto){
+    public ResponseEntity<BonsaiDTO> update(@RequestBody BonsaiDTO bonsaiDto){
 
-        BonsaiDto newBonsaiDto;
+        BonsaiDTO newBonsaiDTO;
 
         if(!bonsaiService.existsById(bonsaiDto.getId())){
             return ResponseEntity.noContent().build();
         }else{
-            newBonsaiDto = BonsaiDto.fromBonsai(bonsaiService.save(bonsaiDto.toBonsai()));
+            newBonsaiDTO = BonsaiDTO.fromBonsai(bonsaiService.save(bonsaiDto.toBonsai()));
         }
 
-        return ResponseEntity.ok(newBonsaiDto);
+        return ResponseEntity.ok(newBonsaiDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BonsaiDto> delete(@PathVariable UUID id){
+    public ResponseEntity<BonsaiDTO> delete(@PathVariable UUID id){
 
         if(!bonsaiService.existsById(id)){
             return ResponseEntity.notFound().build();
@@ -125,9 +95,9 @@ public class BonsaiController {
 
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<BonsaiDto> changeStatus(@PathVariable UUID id, @RequestBody String status){
+    public ResponseEntity<BonsaiDTO> changeStatus(@PathVariable UUID id, @RequestBody String status){
 
-        BonsaiDto newBonsaiDto;
+        BonsaiDTO newBonsaiDTO;
         if(!bonsaiService.existsById(id)){
             return ResponseEntity.notFound().build();
         }else{
@@ -137,13 +107,14 @@ public class BonsaiController {
                 return ResponseEntity.badRequest().build();
             }else{
 
-                newBonsaiDto = bonsaiService.findById(id).map(b-> BonsaiDto.fromBonsai(b)).get();
-                newBonsaiDto.setStatus(status);
-                bonsaiService.save(newBonsaiDto.toBonsai());
-                return ResponseEntity.ok(newBonsaiDto);
+                newBonsaiDTO = bonsaiService.findById(id).map(b-> BonsaiDTO.fromBonsai(b)).get();
+                newBonsaiDTO.setStatus(status);
+                bonsaiService.save(newBonsaiDTO.toBonsai());
+                return ResponseEntity.ok(newBonsaiDTO);
             }
         }
     }
+
 
 
 }

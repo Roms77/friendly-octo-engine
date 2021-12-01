@@ -1,15 +1,11 @@
 package rmignac.bonsai.exposition;
 
-import org.hibernate.annotations.GenericGenerator;
 import rmignac.bonsai.domain.Bonsai;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.Date;
 import java.util.UUID;
 
-public class BonsaiDto {
+public class BonsaiDTO {
 
 
     private UUID id;
@@ -20,7 +16,7 @@ public class BonsaiDto {
     private String status;
 
 
-    public BonsaiDto() {
+    public BonsaiDTO() {
     }
 
     public UUID getId() {
@@ -82,12 +78,12 @@ public class BonsaiDto {
         return b;
     }
 
-    public static BonsaiDto fromBonsai(Bonsai bonsai){
+    public static BonsaiDTO fromBonsai(Bonsai bonsai){
         if(bonsai == null){
             return null;
         }
 
-        BonsaiDto bonsaiDto = new BonsaiDto();
+        BonsaiDTO bonsaiDto = new BonsaiDTO();
         bonsaiDto.setId(bonsai.getId());
         bonsaiDto.setNom(bonsai.getNom());
         bonsaiDto.setSpecies(bonsai.getSpecies());
