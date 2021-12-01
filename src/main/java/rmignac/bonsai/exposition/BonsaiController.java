@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rmignac.bonsai.domain.BonsaiService;
+import rmignac.pruning.exposition.PruningDTO;
 
 
 import java.net.URI;
@@ -115,6 +116,10 @@ public class BonsaiController {
         }
     }
 
+    @GetMapping("/{id}/pruning")
+    public ResponseEntity<PruningDTO> getLastPruning(){
 
+        return ResponseEntity.ok().build();
+    }
 
 }
