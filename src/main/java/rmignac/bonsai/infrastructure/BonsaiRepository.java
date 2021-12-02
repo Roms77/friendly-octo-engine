@@ -2,6 +2,12 @@ package rmignac.bonsai.infrastructure;
 
 import org.springframework.stereotype.Component;
 import rmignac.bonsai.domain.Bonsai;
+import rmignac.pruning.domain.Pruning;
+import rmignac.pruning.infrastructure.PruningRepository;
+import rmignac.repotting.domain.Repotting;
+import rmignac.repotting.infrastructure.RepottingRepository;
+import rmignac.watering.domain.Watering;
+import rmignac.watering.infrastructure.WateringRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,5 +68,18 @@ public class BonsaiRepository {
 
     public boolean existsById(UUID id){
         return bonsaiDao.existsById(id);
+    }
+
+    public Optional<Pruning> getLastPruning(UUID id){
+
+        return bonsaiDao.getLastPruning(id).map(PruningRepository::PruningEntityToPruning);
+    }
+    public Optional<Repotting> getLastRepotting(UUID id){
+
+        return bonsaiDao.getLastRepotting(id).map(RepottingRepository::RepottingEntityToRepotting);
+    }
+    public Optional<Watering> getLastWatering(UUID id){
+
+        return bonsaiDao.getLastWatering(id).map(WateringRepository::WateringEntityToWatering);
     }
 }

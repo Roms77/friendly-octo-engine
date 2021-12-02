@@ -1,4 +1,10 @@
 package rmignac.pruning.infrastructure;
 
-public interface PruningDAO {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface PruningDAO extends JpaRepository<PruningEntity, UUID> {
 }

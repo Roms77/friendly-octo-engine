@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rmignac.bonsai.domain.BonsaiService;
 import rmignac.pruning.exposition.PruningDTO;
+import rmignac.repotting.domain.Repotting;
+import rmignac.repotting.exposition.RepottingDTO;
+import rmignac.watering.exposition.WateringDTO;
 
 
 import java.net.URI;
@@ -117,9 +120,21 @@ public class BonsaiController {
     }
 
     @GetMapping("/{id}/pruning")
-    public ResponseEntity<PruningDTO> getLastPruning(){
-
+    public ResponseEntity<PruningDTO> getLastPruning(@PathVariable UUID id){
+        Optional<PruningDTO> pruningDto = bonsaiService.getLastPruning(id).map(pruning -> PruningDTO.PruningToPruningDTO(pruning));
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/{id}/repotting")
+    public ResponseEntity<RepottingDTO> getLastRepotting(@PathVariable UUID id){
+        bonsaiService.getLastRepotting(id);
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/{id}/watering")
+    public ResponseEntity<WateringDTO> getLastWatering(@PathVariable UUID id){
+        bonsaiService.getLastWatering(id);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }

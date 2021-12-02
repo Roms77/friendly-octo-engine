@@ -8,17 +8,17 @@ import rmignac.repotting.exposition.RepottingDTO;
 
 @Component
 public class PruningRepository {
-    public static Pruning PruningDTOToPruning(PruningDTO pruningDTO){
+    public static Pruning PruningEntityToPruning(PruningEntity pruningEntity){
         Pruning pruning = new Pruning();
-        pruning.setId(pruningDTO.getId());
-        pruning.setDatetime(pruningDTO.getDatetime());
+        pruning.setId(pruningEntity.getId());
+        pruning.setDatetime(pruningEntity.getDatetime());
         return pruning;
     }
 
-    public static PruningDTO PruningToPruningDTO(Pruning pruning){
-        PruningDTO pruningDTO = new PruningDTO();
-        pruningDTO.setId(pruning.getId());
-        pruningDTO.setDatetime(pruning.getDatetime());
-        return pruningDTO;
+    public static PruningEntity PruningToPruningEntity(Pruning pruning){
+        PruningEntity pruningEntity = new PruningEntity();
+        pruningEntity.setId(pruning.getId());
+        pruningEntity.setDatetime(pruning.getDatetime());
+        return pruningEntity;
     }
 }

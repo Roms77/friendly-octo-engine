@@ -3,6 +3,7 @@ package rmignac.watering.infrastructure;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity(name="watering")
@@ -15,7 +16,7 @@ public class WateringEntity {
     @Column(name="id")
     private UUID id;
     @Column(name="datetime")
-    private String datetime;
+    private Date datetime;
 
     public UUID getId() {
         return id;
@@ -25,11 +26,11 @@ public class WateringEntity {
         this.id = id;
     }
 
-    public String getDate() {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDate(String datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 }

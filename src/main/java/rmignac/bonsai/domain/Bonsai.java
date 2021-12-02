@@ -11,7 +11,10 @@ public class Bonsai {
     private Date acquisition_date;
     private int acquisition_age;
     private String status;
-
+    private String last_watering_id;
+    private String last_pruning_id;
+    private String last_repotting_id;
+    private String owner_id;
 
     public Bonsai() {
     }
@@ -64,5 +67,35 @@ public class Bonsai {
         this.status = status;
     }
 
+    public String getLast_watering_id() {
+        return last_watering_id;
+    }
 
+    public void setLast_watering_id(String last_watering_id) {
+        this.last_watering_id = last_watering_id;
+    }
+
+    public String getLast_pruning_id() {
+        return last_pruning_id;
+    }
+
+    public void setLast_pruning_id(String last_pruning_id) {
+        this.last_pruning_id = last_pruning_id;
+    }
+
+    public String getLast_repotting_id() {
+        return last_repotting_id;
+    }
+
+    public void setLast_repotting_id(String last_repotting_id) {
+        this.last_repotting_id = last_repotting_id;
+    }
+
+    public String getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(String owner_id) {
+        this.owner_id = owner_id;
+    }
 }

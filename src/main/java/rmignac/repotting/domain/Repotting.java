@@ -1,11 +1,12 @@
 package rmignac.repotting.domain;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Repotting {
 
     private UUID id;
-    private String datetime;
+    private Date datetime;
 
     public UUID getId() {
         return id;
@@ -15,11 +16,11 @@ public class Repotting {
         this.id = id;
     }
 
-    public String getDatetime() {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 }

@@ -8,17 +8,17 @@ import rmignac.repotting.exposition.RepottingDTO;
 @Component
 public class RepottingRepository {
 
-    public static Repotting RepottingDTOToRepotting(RepottingDTO repottingDTO){
+    public static Repotting RepottingEntityToRepotting(RepottingEntity repottingEntity){
         Repotting repotting = new Repotting();
-        repotting.setId(repottingDTO.getId());
-        repotting.setDatetime(repottingDTO.getDatetime());
+        repotting.setId(repottingEntity.getId());
+        repotting.setDatetime(repottingEntity.getDatetime());
         return repotting;
     }
 
-    public static RepottingDTO RepottingToRepottingDTO(Repotting repotting){
-        RepottingDTO repottingDTO = new RepottingDTO();
-        repottingDTO.setId(repotting.getId());
-        repottingDTO.setDatetime(repotting.getDatetime());
-        return repottingDTO;
+    public static RepottingEntity RepottingToRepottingEntity(Repotting repotting){
+        RepottingEntity repottingEntity = new RepottingEntity();
+        repottingEntity.setId(repotting.getId());
+        repottingEntity.setDatetime(repotting.getDatetime());
+        return repottingEntity;
     }
 }

@@ -1,10 +1,11 @@
 package rmignac.watering.domain;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Watering {
     private UUID id;
-    private String datetime;
+    private Date datetime;
 
     public UUID getId() {
         return id;
@@ -14,11 +15,11 @@ public class Watering {
         this.id = id;
     }
 
-    public String getDatetime() {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 }

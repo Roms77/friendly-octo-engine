@@ -7,17 +7,17 @@ import rmignac.watering.exposition.WateringDTO;
 @Component
 public class WateringRepository {
 
-    public static Watering WateringDTOToWatering(WateringDTO wateringDTO){
+    public static Watering WateringEntityToWatering(WateringEntity wateringEntity){
         Watering watering = new Watering();
-        watering.setId(wateringDTO.getId());
-        watering.setDatetime(wateringDTO.getDatetime());
+        watering.setId(wateringEntity.getId());
+        watering.setDatetime(wateringEntity.getDatetime());
         return watering;
     }
 
-    public static WateringDTO WateringToWateringDTO(Watering watering){
-        WateringDTO wateringDTO = new WateringDTO();
-        wateringDTO.setId(watering.getId());
-        wateringDTO.setDatetime(watering.getDatetime());
-        return wateringDTO;
+    public static WateringEntity WateringToWateringEntity(Watering watering){
+        WateringEntity wateringEntity = new WateringEntity();
+        wateringEntity.setId(watering.getId());
+        wateringEntity.setDatetime(watering.getDatetime());
+        return wateringEntity;
     }
 }
