@@ -27,13 +27,13 @@ public class BonsaiEntity {
     @Column(name="status")
     private String status;
     @Column(name="last_watering_id")
-    private String last_watering_id;
+    private UUID last_watering_id;
     @Column(name="last_pruning_id")
-    private String last_pruning_id;
+    private UUID last_pruning_id;
     @Column(name="last_repotting_id")
-    private String last_repotting_id;
+    private UUID last_repotting_id;
     @Column(name="owner_id")
-    private String owner_id;
+    private UUID owner_id;
 
 
     public BonsaiEntity() {
@@ -87,35 +87,35 @@ public class BonsaiEntity {
         this.status = status;
     }
 
-    public String getLast_watering_id() {
+    public UUID getLast_watering_id() {
         return last_watering_id;
     }
 
-    public void setLast_watering_id(String last_watering_id) {
+    public void setLast_watering_id(UUID last_watering_id) {
         this.last_watering_id = last_watering_id;
     }
 
-    public String getLast_pruning_id() {
+    public UUID getLast_pruning_id() {
         return last_pruning_id;
     }
 
-    public void setLast_pruning_id(String last_pruning_id) {
+    public void setLast_pruning_id(UUID last_pruning_id) {
         this.last_pruning_id = last_pruning_id;
     }
 
-    public String getLast_repotting_id() {
+    public UUID getLast_repotting_id() {
         return last_repotting_id;
     }
 
-    public void setLast_repotting_id(String last_repotting_id) {
+    public void setLast_repotting_id(UUID last_repotting_id) {
         this.last_repotting_id = last_repotting_id;
     }
 
-    public String getOwner_id() {
+    public UUID getOwner_id() {
         return owner_id;
     }
 
-    public void setOwner_id(String owner_id) {
+    public void setOwner_id(UUID owner_id) {
         this.owner_id = owner_id;
     }
 }
