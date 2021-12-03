@@ -1,18 +1,19 @@
 package rmignac.bonsai.exposition;
 
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rmignac.bonsai.BonsaiMapper;
 import rmignac.bonsai.domain.BonsaiService;
+import rmignac.bonsai.domain.Status;
 import rmignac.pruning.exposition.PruningDTO;
-import rmignac.repotting.domain.Repotting;
 import rmignac.repotting.exposition.RepottingDTO;
 import rmignac.watering.exposition.WateringDTO;
 
-
 import java.net.URI;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,32 +28,31 @@ public class BonsaiController {
 
 
     @GetMapping("/")
-    public List<BonsaiDTO> getAllBonsai(){
-        List<BonsaiDTO> listeBonsaiDTO = new ArrayList<>();
-        bonsaiService.findAll().forEach(b-> listeBonsaiDTO.add(BonsaiDTO.fromBonsai(b)));
-        return listeBonsaiDTO;
+    public ResponseEntity<List<BonsaiDTO>> getAllBonsai(@RequestParam(name = "status", required = false) String status,
+                                       @RequestParam(name = "older_than", required=false, defaultValue = "0") int older_than,
+                                        @RequestParam(name = "sort", required = false) String sort,
+                                        @RequestParam(name = "direction", required = false) String direction){
+        List<BonsaiDTO> resBonsai;
+        try{
+            resBonsai = bonsaiService.findAllWithFilter(status, older_than, sort, direction)
+                    .stream()
+                    .map(BonsaiMapper::BonsaiToBonsaiDTO)
+                    .collect(Collectors.toList());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(resBonsai);
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BonsaiDTO> getBonsaiById(@PathVariable String id){
         Optional<BonsaiDTO> bonsaiDto;
-        try{
-             bonsaiDto = bonsaiService.findById(UUID.fromString(id)).map(BonsaiDTO::fromBonsai);
-            if(bonsaiDto.isPresent()){
-                return ResponseEntity.ok(bonsaiDto.get());
-            }else{
-                bonsaiDto = bonsaiService.findByName(id).map(BonsaiDTO::fromBonsai);
-                if(bonsaiDto.isPresent()){
-                    return ResponseEntity.ok(bonsaiDto.get());
-                }
-            }
-        }catch (IllegalArgumentException e){
-        }
-        bonsaiDto = bonsaiService.findByName(id).map(BonsaiDTO::fromBonsai);
+        bonsaiDto = bonsaiService.findByIdOrName(id).map(BonsaiMapper::BonsaiToBonsaiDTO);
         if(bonsaiDto.isPresent()){
             return ResponseEntity.ok(bonsaiDto.get());
         }
-
         return ResponseEntity.notFound().build();
     }
 
@@ -60,34 +60,30 @@ public class BonsaiController {
 
     @PostMapping
     public ResponseEntity<BonsaiDTO> create(@RequestBody BonsaiDTO bonsaiDto){
-        BonsaiDTO newbonsaiDTO = BonsaiDTO.fromBonsai(bonsaiService.save(bonsaiDto.toBonsai()));
-        if(bonsaiDto.getNom() == null){
+
+        BonsaiDTO resBonsaiDTO = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.save(BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
+
+        if(resBonsaiDTO == null){
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.created(URI.create("/bonsai/"+bonsaiDto.getId())).build();
+        return ResponseEntity.created(URI.create("/bonsai/"+resBonsaiDTO.getId())).build();
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<BonsaiDTO> update(@RequestBody BonsaiDTO bonsaiDto){
-
-        BonsaiDTO newBonsaiDTO;
-
-        if(!bonsaiService.existsById(bonsaiDto.getId())){
-            return ResponseEntity.noContent().build();
-        }else{
-            newBonsaiDTO = BonsaiDTO.fromBonsai(bonsaiService.update(bonsaiDto.toBonsai()));
+        BonsaiDTO resBonsai = new BonsaiDTO();
+        resBonsai = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.update(BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
+        if(resBonsai==null){
+            return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok(newBonsaiDTO);
+        return ResponseEntity.ok(resBonsai);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<BonsaiDTO> delete(@PathVariable UUID id){
 
-        if(!bonsaiService.existsById(id)){
-            return ResponseEntity.notFound().build();
-        }else{
-            bonsaiService.delete(id);
+        if(!bonsaiService.delete(id)){
+            ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();
     }
@@ -95,53 +91,48 @@ public class BonsaiController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<BonsaiDTO> changeStatus(@PathVariable UUID id, @RequestBody String status){
+        BonsaiDTO resBonsai;
+        try{
+            resBonsai = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.changeStatus(id, Status.valueOf(status)));
 
-        BonsaiDTO newBonsaiDTO;
-        if(!bonsaiService.existsById(id)){
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+        if(resBonsai==null){
             return ResponseEntity.notFound().build();
         }else{
-            if(!(status.equals("alive") ||
-               status.equals("dead") ||
-               status.equals("unknown"))){
-                return ResponseEntity.badRequest().build();
-            }else{
-
-                newBonsaiDTO = bonsaiService.findById(id).map(BonsaiDTO::fromBonsai).get();
-                newBonsaiDTO.setStatus(status);
-                bonsaiService.save(newBonsaiDTO.toBonsai());
-                return ResponseEntity.ok(newBonsaiDTO);
-            }
+            return ResponseEntity.ok(resBonsai);
         }
     }
 
     @GetMapping("/{id}/pruning")
     public ResponseEntity<List<PruningDTO>> getAllPruning(@PathVariable UUID id){
-        if(!bonsaiService.existsById(id)){
-            return ResponseEntity.notFound().build();
-        }
         List<PruningDTO> pruningDto = bonsaiService.getAllPruning(id).stream().map(PruningDTO::PruningToPruningDTO).collect(Collectors.toList());
 
+        if(pruningDto==null){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(pruningDto);
     }
     @GetMapping("/{id}/repotting")
     public ResponseEntity<List<RepottingDTO>> getAllRepotting(@PathVariable UUID id){
-        if(!bonsaiService.existsById(id)){
-            return ResponseEntity.notFound().build();
-        }
         List<RepottingDTO> repottingDto = bonsaiService.getAllRepotting(id).stream()
                 .map(RepottingDTO::RepottingToRepottingDTO)
                 .collect(Collectors.toList());
 
-
+        if(repottingDto==null){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(repottingDto);
     }
     @GetMapping("/{id}/watering")
     public ResponseEntity<List<WateringDTO>> getAllWatering(@PathVariable UUID id){
-        if(!bonsaiService.existsById(id)){
-            return ResponseEntity.notFound().build();
-        }
+
         List<WateringDTO> wateringDto = bonsaiService.getAllWatering(id).stream().map(WateringDTO::WateringToWateringDTO).collect(Collectors.toList());
 
+        if(wateringDto==null){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(wateringDto);
     }
 

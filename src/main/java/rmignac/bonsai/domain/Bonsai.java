@@ -15,7 +15,7 @@ public class Bonsai {
     private String species;
     private Date acquisition_date;
     private int acquisition_age;
-    private String status;
+    private Status status;
     private List<Watering> watering;
     private List<Pruning> pruning;
     private List<Repotting> repotting;
@@ -64,11 +64,11 @@ public class Bonsai {
         this.acquisition_age = acquisition_age;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

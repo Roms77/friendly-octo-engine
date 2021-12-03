@@ -1,7 +1,10 @@
 package rmignac.bonsai.infrastructure;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import rmignac.bonsai.BonsaiMapper;
 import rmignac.bonsai.domain.Bonsai;
+import rmignac.bonsai.domain.Status;
 import rmignac.pruning.domain.Pruning;
 import rmignac.pruning.infrastructure.PruningRepository;
 import rmignac.repotting.domain.Repotting;
@@ -24,61 +27,27 @@ public class BonsaiRepository {
         this.bonsaiDao=bonsaiDao;
     }
 
-    public Bonsai bonsaiEntityToBonsai(BonsaiEntity bonsaiEntity) {
-        Bonsai bonsai = new Bonsai();
-        bonsai.setId(bonsaiEntity.getId());
-        bonsai.setNom(bonsaiEntity.getNom());
-        bonsai.setAcquisition_date(bonsaiEntity.getAcquisition_date());
-        bonsai.setAcquisition_age(bonsaiEntity.getAcquisition_age());
-        bonsai.setSpecies(bonsaiEntity.getSpecies());
-        bonsai.setStatus(bonsaiEntity.getStatus());
-        bonsai.setPruning(bonsaiEntity.getPruning().stream().map(PruningRepository::PruningEntityToPruning).collect(Collectors.toList()));
-        bonsai.setWatering(bonsaiEntity.getWatering().stream().map(WateringRepository::WateringEntityToWatering).collect(Collectors.toList()));
-        bonsai.setRepotting(bonsaiEntity.getRepotting().stream().map(RepottingRepository::RepottingEntityToRepotting).collect(Collectors.toList()));
-        return bonsai;
-    }
-    public BonsaiEntity bonsaiToBonsaiEntity(Bonsai bonsai){
-        BonsaiEntity bonsaiEntity = new BonsaiEntity();
-        bonsaiEntity.setId(bonsai.getId());
-        bonsaiEntity.setNom(bonsai.getNom());
-        bonsaiEntity.setAcquisition_date(bonsai.getAcquisition_date());
-        bonsaiEntity.setAcquisition_age(bonsai.getAcquisition_age());
-        bonsaiEntity.setSpecies(bonsai.getSpecies());
-        bonsaiEntity.setStatus(bonsai.getStatus());
-//        bonsaiEntity.setPruning(bonsai.getPruning().stream().map(PruningRepository::PruningToPruningEntity).collect(Collectors.toList()));
-//        bonsaiEntity.setWatering(bonsai.getWatering().stream().map(WateringRepository::WateringToWateringEntity).collect(Collectors.toList()));
-//        bonsaiEntity.setRepotting(bonsai.getRepotting().stream().map(RepottingRepository::RepottingToRepottingEntity).collect(Collectors.toList()));
-        return bonsaiEntity;
-    }
-
     public Bonsai save(Bonsai bonsai){
-       return bonsaiEntityToBonsai(bonsaiDao.save(bonsaiToBonsaiEntity(bonsai)));
+       return BonsaiMapper.bonsaiEntityToBonsai(bonsaiDao.save(BonsaiMapper.bonsaiToBonsaiEntity(bonsai)));
     }
 
     public Bonsai update(Bonsai bonsai){
-        Bonsai bonsaiUpdate = new Bonsai();
 
-        bonsaiUpdate.setId(bonsai.getId());
-        bonsaiUpdate.setNom(bonsai.getNom());
-        bonsaiUpdate.setSpecies(bonsai.getSpecies());
-        bonsaiUpdate.setAcquisition_age(bonsai.getAcquisition_age());
-        bonsaiUpdate.setAcquisition_date(bonsai.getAcquisition_date());
-
-        return bonsaiEntityToBonsai(bonsaiDao.save(bonsaiToBonsaiEntity(bonsaiUpdate)));
+        return BonsaiMapper.bonsaiEntityToBonsai(bonsaiDao.save(BonsaiMapper.bonsaiToBonsaiEntity(bonsai)));
 
     }
     public Optional<Bonsai> findByID(UUID id){
-        return bonsaiDao.findById(id).map(this::bonsaiEntityToBonsai);
+        return bonsaiDao.findById(id).map(BonsaiMapper::bonsaiEntityToBonsai);
     }
 
     public List<Bonsai> findAll(){
         List<Bonsai> listeBonsai = new ArrayList<>();
-        bonsaiDao.findAll().forEach(b -> listeBonsai.add(bonsaiEntityToBonsai(b)));
+        bonsaiDao.findAll().forEach(b -> listeBonsai.add(BonsaiMapper.bonsaiEntityToBonsai(b)));
         return listeBonsai;
     }
 
     public Optional<Bonsai> findByName(String nom){
-        return bonsaiDao.findByNom(nom).map(this::bonsaiEntityToBonsai);
+        return bonsaiDao.findByNom(nom).map(BonsaiMapper::bonsaiEntityToBonsai);
     }
 
     public void delete(UUID id){
@@ -102,4 +71,28 @@ public class BonsaiRepository {
         return bonsaiDao.getById(id).getWatering().stream().map(WateringRepository::WateringEntityToWatering).collect(Collectors.toList());
     }
 
+
+    public List<Bonsai> findAllWithFilter(Status status, int older_than, String sort, String direction){
+        Sort mysort = null;
+        if(sort!=null) {
+            if(!(sort.equalsIgnoreCase("status") || sort.equalsIgnoreCase("acquisition_age"))){
+                sort = null;
+            }
+            if (direction == null ) {
+                mysort = Sort.by(Sort.Direction.DESC, sort);
+            } else {
+                if(direction.equalsIgnoreCase("asc")){
+                    mysort = Sort.by(Sort.Direction.ASC, sort);
+                }else{
+                    mysort = Sort.by(Sort.Direction.DESC, sort);
+
+                }
+            }
+        }
+        if(status == null){
+            return bonsaiDao.findAllWithFilterWithoutStatus(older_than, mysort).stream().map(BonsaiMapper::bonsaiEntityToBonsai).collect(Collectors.toList());
+
+        }
+        return bonsaiDao.findAllWithFilter(status, older_than, mysort).stream().map(BonsaiMapper::bonsaiEntityToBonsai).collect(Collectors.toList());
+    }
 }

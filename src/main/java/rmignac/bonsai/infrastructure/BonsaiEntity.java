@@ -1,6 +1,7 @@
 package rmignac.bonsai.infrastructure;
 
 import org.hibernate.annotations.GenericGenerator;
+import rmignac.bonsai.domain.Status;
 import rmignac.owner.infrastructure.OwnerEntity;
 import rmignac.pruning.infrastructure.PruningEntity;
 import rmignac.repotting.domain.Repotting;
@@ -31,8 +32,10 @@ public class BonsaiEntity {
     private Date acquisition_date;
     @Column(name="acquisition_age")
     private int acquisition_age;
+
+    @Enumerated(EnumType.STRING)
     @Column(name="status")
-    private String status;
+    private Status status;
     @OneToMany(targetEntity=WateringEntity.class, mappedBy="bonsaiEntity" )
     private List<WateringEntity> watering;
     @OneToMany(targetEntity=PruningEntity.class, mappedBy="bonsaiEntity" )
@@ -85,11 +88,11 @@ public class BonsaiEntity {
         this.acquisition_age = acquisition_age;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

@@ -1,6 +1,7 @@
 package rmignac.bonsai.exposition;
 
 import rmignac.bonsai.domain.Bonsai;
+import rmignac.bonsai.domain.Status;
 import rmignac.pruning.domain.Pruning;
 import rmignac.pruning.exposition.PruningDTO;
 import rmignac.pruning.infrastructure.PruningRepository;
@@ -25,7 +26,7 @@ public class BonsaiDTO {
     private String species;
     private Date acquisition_date;
     private int acquisition_age;
-    private String status;
+    private Status status;
     private Date last_watering;
     private Date last_pruning;
     private Date last_repotting;
@@ -74,11 +75,11 @@ public class BonsaiDTO {
         this.acquisition_age = acquisition_age;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -106,33 +107,4 @@ public class BonsaiDTO {
         this.last_repotting = last_repotting;
     }
 
-    public Bonsai toBonsai(){
-        Bonsai b = new Bonsai();
-        b.setId(this.id);
-        b.setNom(this.nom);
-        b.setSpecies(this.species);
-        b.setAcquisition_age(this.acquisition_age);
-        b.setAcquisition_date(this.acquisition_date);
-        b.setStatus(this.status);
-        return b;
-    }
-
-    public static BonsaiDTO fromBonsai(Bonsai bonsai){
-        if(bonsai == null){
-            return null;
-        }
-
-        BonsaiDTO bonsaiDto = new BonsaiDTO();
-        bonsaiDto.setId(bonsai.getId());
-        bonsaiDto.setNom(bonsai.getNom());
-        bonsaiDto.setSpecies(bonsai.getSpecies());
-        bonsaiDto.setAcquisition_age(bonsai.getAcquisition_age());
-        bonsaiDto.setAcquisition_date(bonsai.getAcquisition_date());
-        bonsaiDto.setStatus(bonsai.getStatus());
-        bonsaiDto.setLast_pruning(bonsai.getPruning().stream().sorted(Comparator.comparing(Pruning::getDatetime)).map(Pruning::getDatetime).findFirst().orElse(null));
-        bonsaiDto.setLast_watering(bonsai.getWatering().stream().sorted(Comparator.comparing(Watering::getDatetime)).map(Watering::getDatetime).findFirst().orElse(null));
-        bonsaiDto.setLast_repotting(bonsai.getRepotting().stream().sorted(Comparator.comparing(Repotting::getDatetime)).map(Repotting::getDatetime).findFirst().orElse(null));
-
-        return bonsaiDto;
-    }
 }
