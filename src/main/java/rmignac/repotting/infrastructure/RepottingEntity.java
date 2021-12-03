@@ -1,6 +1,7 @@
 package rmignac.repotting.infrastructure;
 
 import org.hibernate.annotations.GenericGenerator;
+import rmignac.bonsai.infrastructure.BonsaiEntity;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,6 +18,8 @@ public class RepottingEntity {
     private UUID id;
     @Column(name="datetime")
     private Date datetime;
+    @ManyToOne(targetEntity = BonsaiEntity.class) @JoinColumn(name="bonsai_id")
+    private BonsaiEntity bonsaiEntity;
 
     public UUID getId() {
         return id;
@@ -32,5 +35,13 @@ public class RepottingEntity {
 
     public void setDatetime(Date datetime) {
         this.datetime = datetime;
+    }
+
+    public BonsaiEntity getBonsaiEntity() {
+        return bonsaiEntity;
+    }
+
+    public void setBonsaiEntity(BonsaiEntity bonsaiEntity) {
+        this.bonsaiEntity = bonsaiEntity;
     }
 }

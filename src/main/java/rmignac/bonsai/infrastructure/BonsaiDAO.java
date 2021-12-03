@@ -26,16 +26,11 @@ public interface BonsaiDAO extends JpaRepository<BonsaiEntity, UUID> {
     @Query("SELECT b FROM bonsai b WHERE b.acquisition_age >= :acquisition_age")
     List<BonsaiEntity> findAllOlderByAge(@Param("acquisition_age") int age);
 
-    @Query("SELECT b FROM bonsai b WHERE b.nom = :nom")
-    Optional<BonsaiEntity> findByName(@Param("nom") String nom);
+    @Query("SELECT b FROM bonsai b WHERE (:status is null or b.status = :status) and (:older_than = 0 or b.acquisition_age >= older_than)")
+    List<BonsaiEntity> findAllWithFilter(@Param("status") String status, @Param("older_than") int older_than);
+    //@Query("SELECT b FROM bonsai b WHERE b.nom = :nom")
+    Optional<BonsaiEntity> findByNom(@Param("nom") String nom);
 
-
-    @Query("SELECT r FROM bonsai b, repotting r WHERE b.id = :id and b.last_repotting_id=r.id")
-    Optional<RepottingEntity> getLastRepotting(@Param("id") UUID id);
-    @Query("SELECT p FROM bonsai b, pruning p WHERE b.id = :id and b.last_pruning_id=p.id")
-    Optional<PruningEntity> getLastPruning(@Param("id") UUID id);
-    @Query("SELECT w FROM bonsai b, watering w WHERE b.id = :id and b.last_watering_id=w.id")
-    Optional<WateringEntity> getLastWatering(@Param("id") UUID id);
 
 
 }

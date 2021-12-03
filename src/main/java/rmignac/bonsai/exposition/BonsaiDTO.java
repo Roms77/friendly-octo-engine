@@ -1,9 +1,21 @@
 package rmignac.bonsai.exposition;
 
 import rmignac.bonsai.domain.Bonsai;
+import rmignac.pruning.domain.Pruning;
+import rmignac.pruning.exposition.PruningDTO;
+import rmignac.pruning.infrastructure.PruningRepository;
+import rmignac.repotting.domain.Repotting;
+import rmignac.repotting.exposition.RepottingDTO;
+import rmignac.repotting.infrastructure.RepottingRepository;
+import rmignac.watering.domain.Watering;
+import rmignac.watering.exposition.WateringDTO;
+import rmignac.watering.infrastructure.WateringRepository;
 
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class BonsaiDTO {
 
@@ -14,10 +26,10 @@ public class BonsaiDTO {
     private Date acquisition_date;
     private int acquisition_age;
     private String status;
-    private UUID last_watering_id;
-    private UUID last_pruning_id;
-    private UUID last_repotting_id;
-    private UUID owner_id;
+    private Date last_watering;
+    private Date last_pruning;
+    private Date last_repotting;
+    //private UUID owner_id;
 
     public BonsaiDTO() {
     }
@@ -70,36 +82,28 @@ public class BonsaiDTO {
         this.status = status;
     }
 
-    public UUID getLast_watering_id() {
-        return last_watering_id;
+    public Date getLast_watering() {
+        return last_watering;
     }
 
-    public void setLast_watering_id(UUID last_watering_id) {
-        this.last_watering_id = last_watering_id;
+    public void setLast_watering(Date last_watering) {
+        this.last_watering = last_watering;
     }
 
-    public UUID getLast_pruning_id() {
-        return last_pruning_id;
+    public Date getLast_pruning() {
+        return last_pruning;
     }
 
-    public void setLast_pruning_id(UUID last_pruning_id) {
-        this.last_pruning_id = last_pruning_id;
+    public void setLast_pruning(Date last_pruning) {
+        this.last_pruning = last_pruning;
     }
 
-    public UUID getLast_repotting_id() {
-        return last_repotting_id;
+    public Date getLast_repotting() {
+        return last_repotting;
     }
 
-    public void setLast_repotting_id(UUID last_repotting_id) {
-        this.last_repotting_id = last_repotting_id;
-    }
-
-    public UUID getOwner_id() {
-        return owner_id;
-    }
-
-    public void setOwner_id(UUID owner_id) {
-        this.owner_id = owner_id;
+    public void setLast_repotting(Date last_repotting) {
+        this.last_repotting = last_repotting;
     }
 
     public Bonsai toBonsai(){
@@ -125,6 +129,9 @@ public class BonsaiDTO {
         bonsaiDto.setAcquisition_age(bonsai.getAcquisition_age());
         bonsaiDto.setAcquisition_date(bonsai.getAcquisition_date());
         bonsaiDto.setStatus(bonsai.getStatus());
+        bonsaiDto.setLast_pruning(bonsai.getPruning().stream().sorted(Comparator.comparing(Pruning::getDatetime)).map(Pruning::getDatetime).findFirst().orElse(null));
+        bonsaiDto.setLast_watering(bonsai.getWatering().stream().sorted(Comparator.comparing(Watering::getDatetime)).map(Watering::getDatetime).findFirst().orElse(null));
+        bonsaiDto.setLast_repotting(bonsai.getRepotting().stream().sorted(Comparator.comparing(Repotting::getDatetime)).map(Repotting::getDatetime).findFirst().orElse(null));
 
         return bonsaiDto;
     }

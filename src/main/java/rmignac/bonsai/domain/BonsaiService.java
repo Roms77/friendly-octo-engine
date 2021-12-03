@@ -22,6 +22,10 @@ public class BonsaiService {
         return bonsaiRepository.save(bonsai);
     }
 
+    public Bonsai update(Bonsai bonsai){
+        return bonsaiRepository.update(bonsai);
+    }
+
     public Optional<Bonsai> findById(UUID id){
         return bonsaiRepository.findByID(id);
     }
@@ -42,13 +46,13 @@ public class BonsaiService {
         return bonsaiRepository.existsById(id);
     }
 
-    public Optional<Pruning> getLastPruning(UUID id){
-        return bonsaiRepository.getLastPruning(id);
+    public List<Pruning> getAllPruning(UUID id){
+        return bonsaiRepository.getAllPruning(id);
     }
-    public Optional<Watering> getLastWatering(UUID id){
-        return bonsaiRepository.getLastWatering(id);
+    public List<Watering> getAllWatering(UUID id){
+        return bonsaiRepository.getAllWatering(id);
     }
-    public Optional<Repotting> getLastRepotting(UUID id){
-        return bonsaiRepository.getLastRepotting(id);
+    public List<Repotting> getAllRepotting(UUID id){
+        return bonsaiRepository.getAllRepotting(id);
     }
 }

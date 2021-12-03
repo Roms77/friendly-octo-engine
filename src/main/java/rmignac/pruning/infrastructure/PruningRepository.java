@@ -6,8 +6,19 @@ import rmignac.pruning.exposition.PruningDTO;
 import rmignac.repotting.domain.Repotting;
 import rmignac.repotting.exposition.RepottingDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 @Component
 public class PruningRepository {
+
+    private PruningDAO pruningDAO;
+
+    public PruningRepository(PruningDAO pruningDAO){
+        this.pruningDAO=pruningDAO;
+    }
     public static Pruning PruningEntityToPruning(PruningEntity pruningEntity){
         Pruning pruning = new Pruning();
         pruning.setId(pruningEntity.getId());
@@ -21,4 +32,5 @@ public class PruningRepository {
         pruningEntity.setDatetime(pruning.getDatetime());
         return pruningEntity;
     }
+
 }

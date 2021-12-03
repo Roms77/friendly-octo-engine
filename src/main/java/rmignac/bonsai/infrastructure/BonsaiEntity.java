@@ -1,9 +1,16 @@
 package rmignac.bonsai.infrastructure;
 
 import org.hibernate.annotations.GenericGenerator;
+import rmignac.owner.infrastructure.OwnerEntity;
+import rmignac.pruning.infrastructure.PruningEntity;
+import rmignac.repotting.domain.Repotting;
+import rmignac.repotting.infrastructure.RepottingEntity;
+import rmignac.watering.domain.Watering;
+import rmignac.watering.infrastructure.WateringEntity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,14 +33,13 @@ public class BonsaiEntity {
     private int acquisition_age;
     @Column(name="status")
     private String status;
-    @Column(name="last_watering_id")
-    private UUID last_watering_id;
-    @Column(name="last_pruning_id")
-    private UUID last_pruning_id;
-    @Column(name="last_repotting_id")
-    private UUID last_repotting_id;
-    @Column(name="owner_id")
-    private UUID owner_id;
+    @OneToMany(targetEntity=WateringEntity.class, mappedBy="bonsaiEntity" )
+    private List<WateringEntity> watering;
+    @OneToMany(targetEntity=PruningEntity.class, mappedBy="bonsaiEntity" )
+    private List<PruningEntity> pruning;
+    @OneToMany(targetEntity= RepottingEntity.class, mappedBy="bonsaiEntity" )
+    private List<RepottingEntity> repotting;
+//    private List<OwnerEntity> owner;
 
 
     public BonsaiEntity() {
@@ -87,35 +93,27 @@ public class BonsaiEntity {
         this.status = status;
     }
 
-    public UUID getLast_watering_id() {
-        return last_watering_id;
+    public List<WateringEntity> getWatering() {
+        return watering;
     }
 
-    public void setLast_watering_id(UUID last_watering_id) {
-        this.last_watering_id = last_watering_id;
+    public void setWatering(List<WateringEntity> watering) {
+        this.watering = watering;
     }
 
-    public UUID getLast_pruning_id() {
-        return last_pruning_id;
+    public List<PruningEntity> getPruning() {
+        return pruning;
     }
 
-    public void setLast_pruning_id(UUID last_pruning_id) {
-        this.last_pruning_id = last_pruning_id;
+    public void setPruning(List<PruningEntity> pruning) {
+        this.pruning = pruning;
     }
 
-    public UUID getLast_repotting_id() {
-        return last_repotting_id;
+    public List<RepottingEntity> getRepotting() {
+        return repotting;
     }
 
-    public void setLast_repotting_id(UUID last_repotting_id) {
-        this.last_repotting_id = last_repotting_id;
-    }
-
-    public UUID getOwner_id() {
-        return owner_id;
-    }
-
-    public void setOwner_id(UUID owner_id) {
-        this.owner_id = owner_id;
+    public void setRepotting(List<RepottingEntity> repotting) {
+        this.repotting = repotting;
     }
 }

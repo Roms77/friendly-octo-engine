@@ -1,6 +1,11 @@
 package rmignac.bonsai.domain;
 
+import rmignac.pruning.domain.Pruning;
+import rmignac.repotting.domain.Repotting;
+import rmignac.watering.domain.Watering;
+
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class Bonsai {
@@ -11,10 +16,10 @@ public class Bonsai {
     private Date acquisition_date;
     private int acquisition_age;
     private String status;
-    private UUID last_watering_id;
-    private UUID last_pruning_id;
-    private UUID last_repotting_id;
-    private UUID owner_id;
+    private List<Watering> watering;
+    private List<Pruning> pruning;
+    private List<Repotting> repotting;
+    //private UUID owner_id;
 
     public Bonsai() {
     }
@@ -67,35 +72,27 @@ public class Bonsai {
         this.status = status;
     }
 
-    public UUID getLast_watering_id() {
-        return last_watering_id;
+    public List<Watering> getWatering() {
+        return watering;
     }
 
-    public void setLast_watering_id(UUID last_watering_id) {
-        this.last_watering_id = last_watering_id;
+    public void setWatering(List<Watering> watering) {
+        this.watering = watering;
     }
 
-    public UUID getLast_pruning_id() {
-        return last_pruning_id;
+    public List<Pruning> getPruning() {
+        return pruning;
     }
 
-    public void setLast_pruning_id(UUID last_pruning_id) {
-        this.last_pruning_id = last_pruning_id;
+    public void setPruning(List<Pruning> pruning) {
+        this.pruning = pruning;
     }
 
-    public UUID getLast_repotting_id() {
-        return last_repotting_id;
+    public List<Repotting> getRepotting() {
+        return repotting;
     }
 
-    public void setLast_repotting_id(UUID last_repotting_id) {
-        this.last_repotting_id = last_repotting_id;
-    }
-
-    public UUID getOwner_id() {
-        return owner_id;
-    }
-
-    public void setOwner_id(UUID owner_id) {
-        this.owner_id = owner_id;
+    public void setRepotting(List<Repotting> repotting) {
+        this.repotting = repotting;
     }
 }
