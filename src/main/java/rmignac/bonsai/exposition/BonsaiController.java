@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import rmignac.bonsai.BonsaiMapper;
 import rmignac.bonsai.domain.BonsaiService;
 import rmignac.bonsai.domain.Status;
-import rmignac.pruning.exposition.PruningDTO;
-import rmignac.repotting.exposition.RepottingDTO;
-import rmignac.watering.exposition.WateringDTO;
 
 import java.net.URI;
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/bonsai")
+@RequestMapping("/bonsais")
 public class BonsaiController {
 
 
@@ -28,11 +25,11 @@ public class BonsaiController {
 
 
     @GetMapping("/")
-    public ResponseEntity<List<BonsaiDTO>> getAllBonsai(@RequestParam(name = "status", required = false) String status,
+    public ResponseEntity<List<BonsaiDTO>> getAllBonsais(@RequestParam(name = "status", required = false) String status,
                                        @RequestParam(name = "older_than", required=false, defaultValue = "0") int older_than,
                                         @RequestParam(name = "sort", required = false) String sort,
                                         @RequestParam(name = "direction", required = false) String direction){
-        List<BonsaiDTO> resBonsai;
+        List<BonsaiDTO> resBonsai ;
         try{
             resBonsai = bonsaiService.findAllWithFilter(status, older_than, sort, direction)
                     .stream()
@@ -70,9 +67,8 @@ public class BonsaiController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BonsaiDTO> update(@RequestBody BonsaiDTO bonsaiDto){
-        BonsaiDTO resBonsai = new BonsaiDTO();
-        resBonsai = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.update(BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
+    public ResponseEntity<BonsaiDTO> update(@PathVariable UUID id, @RequestBody BonsaiDTO bonsaiDto){
+        BonsaiDTO resBonsai = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.update(id, BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
         if(resBonsai==null){
             return ResponseEntity.notFound().build();
         }
@@ -83,9 +79,9 @@ public class BonsaiController {
     public ResponseEntity<BonsaiDTO> delete(@PathVariable UUID id){
 
         if(!bonsaiService.delete(id)){
-            ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 
@@ -101,13 +97,13 @@ public class BonsaiController {
         if(resBonsai==null){
             return ResponseEntity.notFound().build();
         }else{
-            return ResponseEntity.ok(resBonsai);
+            return ResponseEntity.noContent().build();
         }
     }
 
     @GetMapping("/{id}/pruning")
     public ResponseEntity<List<PruningDTO>> getAllPruning(@PathVariable UUID id){
-        List<PruningDTO> pruningDto = bonsaiService.getAllPruning(id).stream().map(PruningDTO::PruningToPruningDTO).collect(Collectors.toList());
+        List<PruningDTO> pruningDto = bonsaiService.getAllPruning(id).stream().map(BonsaiMapper::PruningToPruningDTO).collect(Collectors.toList());
 
         if(pruningDto==null){
             return ResponseEntity.notFound().build();
@@ -117,7 +113,7 @@ public class BonsaiController {
     @GetMapping("/{id}/repotting")
     public ResponseEntity<List<RepottingDTO>> getAllRepotting(@PathVariable UUID id){
         List<RepottingDTO> repottingDto = bonsaiService.getAllRepotting(id).stream()
-                .map(RepottingDTO::RepottingToRepottingDTO)
+                .map(BonsaiMapper::RepottingToRepottingDTO)
                 .collect(Collectors.toList());
 
         if(repottingDto==null){
@@ -128,7 +124,7 @@ public class BonsaiController {
     @GetMapping("/{id}/watering")
     public ResponseEntity<List<WateringDTO>> getAllWatering(@PathVariable UUID id){
 
-        List<WateringDTO> wateringDto = bonsaiService.getAllWatering(id).stream().map(WateringDTO::WateringToWateringDTO).collect(Collectors.toList());
+        List<WateringDTO> wateringDto = bonsaiService.getAllWatering(id).stream().map(BonsaiMapper::WateringToWateringDTO).collect(Collectors.toList());
 
         if(wateringDto==null){
             return ResponseEntity.notFound().build();

@@ -1,9 +1,11 @@
-package rmignac.repotting.domain;
+package rmignac.bonsai.exposition;
+
+import rmignac.bonsai.domain.Pruning;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class Repotting {
+public class PruningDTO {
 
     private UUID id;
     private Date datetime;
@@ -23,4 +25,6 @@ public class Repotting {
     public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
+
+
 }

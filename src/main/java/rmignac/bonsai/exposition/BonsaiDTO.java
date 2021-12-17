@@ -1,22 +1,11 @@
 package rmignac.bonsai.exposition;
 
-import rmignac.bonsai.domain.Bonsai;
 import rmignac.bonsai.domain.Status;
-import rmignac.pruning.domain.Pruning;
-import rmignac.pruning.exposition.PruningDTO;
-import rmignac.pruning.infrastructure.PruningRepository;
-import rmignac.repotting.domain.Repotting;
-import rmignac.repotting.exposition.RepottingDTO;
-import rmignac.repotting.infrastructure.RepottingRepository;
-import rmignac.watering.domain.Watering;
-import rmignac.watering.exposition.WateringDTO;
-import rmignac.watering.infrastructure.WateringRepository;
+import rmignac.owner.domain.Owner;
+import rmignac.owner.exposition.OwnerDTO;
 
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class BonsaiDTO {
 
@@ -30,7 +19,7 @@ public class BonsaiDTO {
     private Date last_watering;
     private Date last_pruning;
     private Date last_repotting;
-    //private UUID owner_id;
+    private OwnerDTO owner;
 
     public BonsaiDTO() {
     }
@@ -107,4 +96,11 @@ public class BonsaiDTO {
         this.last_repotting = last_repotting;
     }
 
+    public OwnerDTO getOwner() {
+        return owner;
+    }
+
+    public void setOwner(OwnerDTO owner) {
+        this.owner = owner;
+    }
 }

@@ -1,8 +1,7 @@
 package rmignac.bonsai.domain;
 
-import rmignac.pruning.domain.Pruning;
-import rmignac.repotting.domain.Repotting;
-import rmignac.watering.domain.Watering;
+import rmignac.owner.domain.Owner;
+import rmignac.owner.exposition.OwnerDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -19,7 +18,7 @@ public class Bonsai {
     private List<Watering> watering;
     private List<Pruning> pruning;
     private List<Repotting> repotting;
-    //private UUID owner_id;
+    private Owner owner;
 
     public Bonsai() {
     }
@@ -94,5 +93,13 @@ public class Bonsai {
 
     public void setRepotting(List<Repotting> repotting) {
         this.repotting = repotting;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 }

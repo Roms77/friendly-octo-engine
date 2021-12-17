@@ -3,11 +3,6 @@ package rmignac.bonsai.infrastructure;
 import org.hibernate.annotations.GenericGenerator;
 import rmignac.bonsai.domain.Status;
 import rmignac.owner.infrastructure.OwnerEntity;
-import rmignac.pruning.infrastructure.PruningEntity;
-import rmignac.repotting.domain.Repotting;
-import rmignac.repotting.infrastructure.RepottingEntity;
-import rmignac.watering.domain.Watering;
-import rmignac.watering.infrastructure.WateringEntity;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -36,13 +31,14 @@ public class BonsaiEntity {
     @Enumerated(EnumType.STRING)
     @Column(name="status")
     private Status status;
-    @OneToMany(targetEntity=WateringEntity.class, mappedBy="bonsaiEntity" )
+    @OneToMany(targetEntity=WateringEntity.class, mappedBy="bonsaiEntity")
     private List<WateringEntity> watering;
     @OneToMany(targetEntity=PruningEntity.class, mappedBy="bonsaiEntity" )
     private List<PruningEntity> pruning;
     @OneToMany(targetEntity= RepottingEntity.class, mappedBy="bonsaiEntity" )
     private List<RepottingEntity> repotting;
-//    private List<OwnerEntity> owner;
+    @ManyToOne(targetEntity = OwnerEntity.class) @JoinColumn(name="owner_id")
+    private OwnerEntity ownerEntity;
 
 
     public BonsaiEntity() {
@@ -118,5 +114,13 @@ public class BonsaiEntity {
 
     public void setRepotting(List<RepottingEntity> repotting) {
         this.repotting = repotting;
+    }
+
+    public OwnerEntity getOwnerEntity() {
+        return ownerEntity;
+    }
+
+    public void setOwnerEntity(OwnerEntity ownerEntity) {
+        this.ownerEntity = ownerEntity;
     }
 }

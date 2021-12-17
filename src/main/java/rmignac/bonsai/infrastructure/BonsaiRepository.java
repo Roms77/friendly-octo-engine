@@ -5,12 +5,9 @@ import org.springframework.stereotype.Component;
 import rmignac.bonsai.BonsaiMapper;
 import rmignac.bonsai.domain.Bonsai;
 import rmignac.bonsai.domain.Status;
-import rmignac.pruning.domain.Pruning;
-import rmignac.pruning.infrastructure.PruningRepository;
-import rmignac.repotting.domain.Repotting;
-import rmignac.repotting.infrastructure.RepottingRepository;
-import rmignac.watering.domain.Watering;
-import rmignac.watering.infrastructure.WateringRepository;
+import rmignac.bonsai.domain.Pruning;
+import rmignac.bonsai.domain.Repotting;
+import rmignac.bonsai.domain.Watering;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,15 +57,15 @@ public class BonsaiRepository {
 
     public List<Pruning> getAllPruning(UUID id){
 
-        return bonsaiDao.getById(id).getPruning().stream().map(PruningRepository::PruningEntityToPruning).collect(Collectors.toList());
+        return bonsaiDao.getById(id).getPruning().stream().map(BonsaiMapper::PruningEntityToPruning).collect(Collectors.toList());
     }
     public List<Repotting> getAllRepotting(UUID id){
 
-        return bonsaiDao.getById(id).getRepotting().stream().map(RepottingRepository::RepottingEntityToRepotting).collect(Collectors.toList());
+        return bonsaiDao.getById(id).getRepotting().stream().map(BonsaiMapper::RepottingEntityToRepotting).collect(Collectors.toList());
     }
     public List<Watering> getAllWatering(UUID id){
 
-        return bonsaiDao.getById(id).getWatering().stream().map(WateringRepository::WateringEntityToWatering).collect(Collectors.toList());
+        return bonsaiDao.getById(id).getWatering().stream().map(BonsaiMapper::WateringEntityToWatering).collect(Collectors.toList());
     }
 
 

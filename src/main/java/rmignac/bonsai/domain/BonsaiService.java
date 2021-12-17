@@ -1,14 +1,7 @@
 package rmignac.bonsai.domain;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import rmignac.bonsai.BonsaiMapper;
-import rmignac.bonsai.exposition.BonsaiDTO;
 import rmignac.bonsai.infrastructure.BonsaiRepository;
-import rmignac.pruning.domain.Pruning;
-import rmignac.repotting.domain.Repotting;
-import rmignac.watering.domain.Watering;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,19 +33,21 @@ public class BonsaiService {
         return bonsaiRepository.save(bonsai);
     }
 
-    public Bonsai update(Bonsai bonsai){
-        Bonsai bonsaiUpdate = new Bonsai();
-        Optional<Bonsai> optBonsai = findById(bonsai.getId());
+    public Bonsai update(UUID id, Bonsai bonsai){
+        Optional<Bonsai> optBonsai = findById(id);
         if(!optBonsai.isPresent()){
             return null;
         }else {
-            bonsaiUpdate.setId(optBonsai.get().getId());
-            bonsaiUpdate.setNom(optBonsai.get().getNom());
-            bonsaiUpdate.setSpecies(optBonsai.get().getSpecies());
-            bonsaiUpdate.setAcquisition_age(optBonsai.get().getAcquisition_age());
-            bonsaiUpdate.setAcquisition_date(optBonsai.get().getAcquisition_date());
+            if(bonsai.getNom()!=null)
+            optBonsai.get().setNom(bonsai.getNom());
+            if(bonsai.getSpecies()!=null)
+            optBonsai.get().setSpecies(bonsai.getSpecies());
+            if(bonsai.getAcquisition_age()!=0)
+            optBonsai.get().setAcquisition_age(bonsai.getAcquisition_age());
+            if(bonsai.getAcquisition_date()!=null)
+            optBonsai.get().setAcquisition_date(bonsai.getAcquisition_date());
         }
-        return bonsaiRepository.update(bonsai);
+        return bonsaiRepository.update(optBonsai.get());
     }
     public Optional<Bonsai> findByIdOrName(String id){
         Optional<Bonsai> optBonsai;
@@ -89,7 +84,6 @@ public class BonsaiService {
         }else{
             bonsaiRepository.delete(id);
         }
-        bonsaiRepository.delete(id);
         return true;
     }
 

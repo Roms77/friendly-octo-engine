@@ -1,15 +1,14 @@
-package rmignac.repotting.infrastructure;
+package rmignac.bonsai.infrastructure;
 
 import org.hibernate.annotations.GenericGenerator;
-import rmignac.bonsai.infrastructure.BonsaiEntity;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(name="repotting")
-@Table(name="repotting")
-public class RepottingEntity {
+@Entity(name="pruning")
+@Table(name="pruning")
+public class PruningEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")

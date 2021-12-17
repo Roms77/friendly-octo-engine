@@ -1,9 +1,12 @@
-package rmignac.watering.domain;
+package rmignac.bonsai.exposition;
+
+import rmignac.bonsai.domain.Watering;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class Watering {
+public class WateringDTO {
+
     private UUID id;
     private Date datetime;
 
@@ -22,4 +25,6 @@ public class Watering {
     public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
+
+
 }

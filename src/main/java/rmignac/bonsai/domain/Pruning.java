@@ -1,4 +1,4 @@
-package rmignac.pruning.domain;
+package rmignac.bonsai.domain;
 
 import java.util.Date;
 import java.util.UUID;

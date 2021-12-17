@@ -1,4 +1,4 @@
-package rmignac.watering.infrastructure;
+package rmignac.bonsai.infrastructure;
 
 import org.hibernate.annotations.GenericGenerator;
 import rmignac.bonsai.infrastructure.BonsaiEntity;
@@ -7,9 +7,9 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(name="watering")
-@Table(name="watering")
-public class WateringEntity {
+@Entity(name="repotting")
+@Table(name="repotting")
+public class RepottingEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
