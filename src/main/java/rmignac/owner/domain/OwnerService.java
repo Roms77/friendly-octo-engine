@@ -3,7 +3,11 @@ package rmignac.owner.domain;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import rmignac.bonsai.domain.Bonsai;
+import rmignac.bonsai.domain.BonsaiService;
+import rmignac.bonsai.infrastructure.BonsaiDAO;
+import rmignac.bonsai.infrastructure.BonsaiRepository;
 import rmignac.owner.OwnerMapper;
+import rmignac.owner.exceptions.BonsaiNotExistException;
 import rmignac.owner.exceptions.OwnerNotExistException;
 import rmignac.owner.exceptions.UnautorizedException;
 import rmignac.owner.infrastructure.OwnerRepository;
@@ -17,8 +21,10 @@ import java.util.UUID;
 public class OwnerService {
 
     private OwnerRepository ownerRepository;
-    public OwnerService(OwnerRepository ownerRepository){
+    private BonsaiRepository bonsaiRepository;
+    public OwnerService(OwnerRepository ownerRepository, BonsaiRepository bonsaiRepository){
         this.ownerRepository=ownerRepository;
+        this.bonsaiRepository=bonsaiRepository;
     }
 
     public List<Owner> getOwners(int hasMore){
@@ -39,7 +45,7 @@ public class OwnerService {
         return ownerRepository.findById(id);
     }
 
-    public Optional<List<Bonsai>> getBonsaisByOwnerID(UUID id){
+    public Optional<List<BonsaiSimplifie>> getBonsaisByOwnerID(UUID id){
 
         if(!ownerRepository.findById(id).isPresent()){
             return null;
@@ -47,51 +53,52 @@ public class OwnerService {
         return ownerRepository.findById(id).map(Owner::getBonsais);
     }
 
-    public Bonsai transferBonsai(UUID currentOwnerId, UUID bonsaiId, UUID newOwnerID) throws OwnerNotExistException, UnautorizedException{
-        Optional<Owner> currentOwner = ownerRepository.findById(currentOwnerId);
-        if(!currentOwner.isPresent()){
-             throw new OwnerNotExistException();
-        }
-        Bonsai bonsai = currentOwner.get().getBonsais().stream().filter(myBonsai -> myBonsai.getId()==bonsaiId).findFirst().orElse(null);
-        if(bonsai==null){
-            throw new UnautorizedException();
-        }
-        Optional<Owner> newOwner = ownerRepository.findById(currentOwnerId);
-        if(!newOwner.isPresent()){
-            throw new OwnerNotExistException();
-        }
-        List<Bonsai> bonsaisNewOwner = newOwner.get().getBonsais();
-        List<Bonsai> bonsaisCurrentOwner = newOwner.get().getBonsais();
-        bonsaisNewOwner.add(bonsai);
-        newOwner.get().setBonsais(bonsaisNewOwner);
-        bonsaisCurrentOwner.remove(bonsai);
-        currentOwner.get().setBonsais(bonsaisCurrentOwner);
-        ownerRepository.update(newOwner.get());
-        ownerRepository.update(currentOwner.get());
+    public Bonsai transferBonsai(UUID currentOwnerId, UUID bonsaiId, UUID newOwnerId) throws OwnerNotExistException, UnautorizedException, BonsaiNotExistException{
+        Optional<Owner> optNewOwner = ownerRepository.findById(newOwnerId);
+        Optional<Owner> optCurrentOwner = ownerRepository.findById(currentOwnerId);
+        Optional<Bonsai> optBonsai;
+        Bonsai bonsai;
+        Owner newOwner;
+        Owner currentOwner;
 
-        return bonsai;
+
+        if(!(optNewOwner.isPresent() && optCurrentOwner.isPresent())) throw new OwnerNotExistException();
+
+        newOwner = optNewOwner.get();
+        currentOwner = optCurrentOwner.get();
+
+        optBonsai = bonsaiRepository.findByID(bonsaiId);
+        if(!optBonsai.isPresent()) throw new BonsaiNotExistException();
+
+        bonsai = optBonsai.get();
+
+        if(!bonsai.getOwner().getId().equals(currentOwner.getId())) throw new UnautorizedException();
+
+        bonsai.setOwner(newOwner);
+
+        return bonsaiRepository.update(bonsai);
     }
 
 
-    public Bonsai addBonsai(UUID currentOwnerId, UUID bonsaiId, UUID newOwnerID) throws OwnerNotExistException, UnautorizedException{
-        Optional<Owner> currentOwner = ownerRepository.findById(currentOwnerId);
-        if(!currentOwner.isPresent()){
-            throw new OwnerNotExistException();
-        }
-        Bonsai bonsai = currentOwner.get().getBonsais().stream().filter(myBonsai -> myBonsai.getId()==bonsaiId).findFirst().orElse(null);
-        if(bonsai==null){
-            throw new UnautorizedException();
-        }
+    public Bonsai addBonsai(UUID newOwnerId, UUID bonsaiId) throws OwnerNotExistException, UnautorizedException, BonsaiNotExistException{
+        Optional<Owner> optOwner = ownerRepository.findById(newOwnerId);
+        Optional<Bonsai> optBonsai;
+        Owner owner;
+        Bonsai bonsai;
 
-        List<Bonsai> bonsaisNewOwner = newOwner.get().getBonsais();
-        List<Bonsai> bonsaisCurrentOwner = newOwner.get().getBonsais();
-        bonsaisNewOwner.add(bonsai);
-        newOwner.get().setBonsais(bonsaisNewOwner);
-        bonsaisCurrentOwner.remove(bonsai);
-        currentOwner.get().setBonsais(bonsaisCurrentOwner);
-        ownerRepository.update(newOwner.get());
-        ownerRepository.update(currentOwner.get());
+        if(!optOwner.isPresent()) throw new OwnerNotExistException();
 
-        return bonsai;
+        owner= optOwner.get();
+
+        optBonsai = bonsaiRepository.findByID(bonsaiId);
+        if(!optBonsai.isPresent()) throw new BonsaiNotExistException();
+
+        bonsai = optBonsai.get();
+
+        if(bonsai.getOwner()!=null) throw new UnautorizedException();
+
+        bonsai.setOwner(owner);
+
+        return bonsaiRepository.update(bonsai);
     }
 }

@@ -1,7 +1,10 @@
 package rmignac.owner;
 
 import rmignac.bonsai.BonsaiMapper;
+import rmignac.bonsai.infrastructure.BonsaiEntity;
+import rmignac.owner.domain.BonsaiSimplifie;
 import rmignac.owner.domain.Owner;
+import rmignac.owner.exposition.BonsaiSimplifieDTO;
 import rmignac.owner.exposition.OwnerDTO;
 import rmignac.owner.infrastructure.OwnerEntity;
 
@@ -17,7 +20,7 @@ public class OwnerMapper {
         owner.setId(ownerEntity.getId());
         owner.setName(ownerEntity.getName());
         if(ownerEntity.getBonsais()!=null)
-        owner.setBonsais(ownerEntity.getBonsais().stream().map(BonsaiMapper::bonsaiEntityToBonsai).collect(Collectors.toList()));
+        owner.setBonsais(ownerEntity.getBonsais().stream().map(OwnerMapper::bonsaiEntityToBonsaiSimplifie).collect(Collectors.toList()));
 
         return owner;
     }
@@ -29,8 +32,6 @@ public class OwnerMapper {
         }
         ownerEntity.setId(owner.getId());
         ownerEntity.setName(owner.getName());
-        if(owner.getBonsais()!=null)
-        ownerEntity.setBonsais(owner.getBonsais().stream().map(BonsaiMapper::bonsaiToBonsaiEntity).collect(Collectors.toList()));
         return ownerEntity;
     }
 
@@ -42,8 +43,6 @@ public class OwnerMapper {
         }
         owner.setId(ownerDTO.getId());
         owner.setName(ownerDTO.getName());
-        if(ownerDTO.getBonsais()!=null)
-        owner.setBonsais(ownerDTO.getBonsais().stream().map(BonsaiMapper::bonsaiDTOtoBonsai).collect(Collectors.toList()));
 
         return owner;
     }
@@ -56,7 +55,34 @@ public class OwnerMapper {
         ownerDTO.setId(owner.getId());
         ownerDTO.setName(owner.getName());
         if(owner.getBonsais()!=null)
-        ownerDTO.setBonsais(owner.getBonsais().stream().map(BonsaiMapper::BonsaiToBonsaiDTO).collect(Collectors.toList()));
+        ownerDTO.setBonsais(owner.getBonsais().stream().map(OwnerMapper::bonsaiSimplifieToBonsaiSimplifieDTO).collect(Collectors.toList()));
         return ownerDTO;
+    }
+
+    public static BonsaiSimplifieDTO bonsaiSimplifieToBonsaiSimplifieDTO(BonsaiSimplifie bonsaiSimplifie){
+
+        BonsaiSimplifieDTO bonsaiSimplifieDTO = new BonsaiSimplifieDTO();
+        if(bonsaiSimplifie==null) return null;
+
+        bonsaiSimplifieDTO.setAge(bonsaiSimplifie.getAge());
+        bonsaiSimplifieDTO.setId(bonsaiSimplifie.getId());
+        bonsaiSimplifieDTO.setName(bonsaiSimplifie.getName());
+        bonsaiSimplifieDTO.setSpecies(bonsaiSimplifie.getSpecies());
+
+        return bonsaiSimplifieDTO;
+    }
+
+
+    public static BonsaiSimplifie bonsaiEntityToBonsaiSimplifie(BonsaiEntity bonsaiEntity){
+
+        BonsaiSimplifie bonsaiSimplifie = new BonsaiSimplifie();
+        if(bonsaiEntity==null) return null;
+
+        bonsaiSimplifie.setAge(bonsaiEntity.getAcquisition_age());
+        bonsaiSimplifie.setId(bonsaiEntity.getId());
+        bonsaiSimplifie.setName(bonsaiEntity.getNom());
+        bonsaiSimplifie.setSpecies(bonsaiEntity.getSpecies());
+
+        return bonsaiSimplifie;
     }
 }

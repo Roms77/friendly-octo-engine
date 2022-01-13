@@ -33,7 +33,7 @@ public class BonsaiController {
         try{
             resBonsai = bonsaiService.findAllWithFilter(status, older_than, sort, direction)
                     .stream()
-                    .map(BonsaiMapper::BonsaiToBonsaiDTO)
+                    .map(BonsaiMapper::bonsaiToBonsaiDTO)
                     .collect(Collectors.toList());
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -46,7 +46,7 @@ public class BonsaiController {
     @GetMapping("/{id}")
     public ResponseEntity<BonsaiDTO> getBonsaiById(@PathVariable String id){
         Optional<BonsaiDTO> bonsaiDto;
-        bonsaiDto = bonsaiService.findByIdOrName(id).map(BonsaiMapper::BonsaiToBonsaiDTO);
+        bonsaiDto = bonsaiService.findByIdOrName(id).map(BonsaiMapper::bonsaiToBonsaiDTO);
         if(bonsaiDto.isPresent()){
             return ResponseEntity.ok(bonsaiDto.get());
         }
@@ -58,7 +58,7 @@ public class BonsaiController {
     @PostMapping
     public ResponseEntity<BonsaiDTO> create(@RequestBody BonsaiDTO bonsaiDto){
 
-        BonsaiDTO resBonsaiDTO = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.save(BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
+        BonsaiDTO resBonsaiDTO = BonsaiMapper.bonsaiToBonsaiDTO(bonsaiService.save(BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
 
         if(resBonsaiDTO == null){
             return ResponseEntity.badRequest().build();
@@ -68,7 +68,7 @@ public class BonsaiController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<BonsaiDTO> update(@PathVariable UUID id, @RequestBody BonsaiDTO bonsaiDto){
-        BonsaiDTO resBonsai = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.update(id, BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
+        BonsaiDTO resBonsai = BonsaiMapper.bonsaiToBonsaiDTO(bonsaiService.update(id, BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
         if(resBonsai==null){
             return ResponseEntity.notFound().build();
         }
@@ -89,7 +89,7 @@ public class BonsaiController {
     public ResponseEntity<BonsaiDTO> changeStatus(@PathVariable UUID id, @RequestBody String status){
         BonsaiDTO resBonsai;
         try{
-            resBonsai = BonsaiMapper.BonsaiToBonsaiDTO(bonsaiService.changeStatus(id, Status.valueOf(status)));
+            resBonsai = BonsaiMapper.bonsaiToBonsaiDTO(bonsaiService.changeStatus(id, Status.valueOf(status)));
 
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
@@ -103,7 +103,7 @@ public class BonsaiController {
 
     @GetMapping("/{id}/pruning")
     public ResponseEntity<List<PruningDTO>> getAllPruning(@PathVariable UUID id){
-        List<PruningDTO> pruningDto = bonsaiService.getAllPruning(id).stream().map(BonsaiMapper::PruningToPruningDTO).collect(Collectors.toList());
+        List<PruningDTO> pruningDto = bonsaiService.getAllPruning(id).stream().map(BonsaiMapper::pruningToPruningDTO).collect(Collectors.toList());
 
         if(pruningDto==null){
             return ResponseEntity.notFound().build();
@@ -113,7 +113,7 @@ public class BonsaiController {
     @GetMapping("/{id}/repotting")
     public ResponseEntity<List<RepottingDTO>> getAllRepotting(@PathVariable UUID id){
         List<RepottingDTO> repottingDto = bonsaiService.getAllRepotting(id).stream()
-                .map(BonsaiMapper::RepottingToRepottingDTO)
+                .map(BonsaiMapper::repottingToRepottingDTO)
                 .collect(Collectors.toList());
 
         if(repottingDto==null){
@@ -124,7 +124,7 @@ public class BonsaiController {
     @GetMapping("/{id}/watering")
     public ResponseEntity<List<WateringDTO>> getAllWatering(@PathVariable UUID id){
 
-        List<WateringDTO> wateringDto = bonsaiService.getAllWatering(id).stream().map(BonsaiMapper::WateringToWateringDTO).collect(Collectors.toList());
+        List<WateringDTO> wateringDto = bonsaiService.getAllWatering(id).stream().map(BonsaiMapper::wateringToWateringDTO).collect(Collectors.toList());
 
         if(wateringDto==null){
             return ResponseEntity.notFound().build();

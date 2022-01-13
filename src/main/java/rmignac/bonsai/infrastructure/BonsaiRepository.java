@@ -57,15 +57,15 @@ public class BonsaiRepository {
 
     public List<Pruning> getAllPruning(UUID id){
 
-        return bonsaiDao.getById(id).getPruning().stream().map(BonsaiMapper::PruningEntityToPruning).collect(Collectors.toList());
+        return bonsaiDao.getById(id).getPruning().stream().map(BonsaiMapper::pruningEntityToPruning).collect(Collectors.toList());
     }
     public List<Repotting> getAllRepotting(UUID id){
 
-        return bonsaiDao.getById(id).getRepotting().stream().map(BonsaiMapper::RepottingEntityToRepotting).collect(Collectors.toList());
+        return bonsaiDao.getById(id).getRepotting().stream().map(BonsaiMapper::repottingEntityToRepotting).collect(Collectors.toList());
     }
     public List<Watering> getAllWatering(UUID id){
 
-        return bonsaiDao.getById(id).getWatering().stream().map(BonsaiMapper::WateringEntityToWatering).collect(Collectors.toList());
+        return bonsaiDao.getById(id).getWatering().stream().map(BonsaiMapper::wateringEntityToWatering).collect(Collectors.toList());
     }
 
 

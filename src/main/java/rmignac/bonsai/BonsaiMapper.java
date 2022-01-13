@@ -12,6 +12,7 @@ import rmignac.bonsai.infrastructure.RepottingEntity;
 import rmignac.bonsai.infrastructure.WateringEntity;
 import rmignac.bonsai.domain.Repotting;
 import rmignac.bonsai.domain.Watering;
+import rmignac.owner.OwnerMapper;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -29,10 +30,11 @@ public class BonsaiMapper {
         b.setAcquisition_age(bonsaiDTO.getAcquisition_age());
         b.setAcquisition_date(bonsaiDTO.getAcquisition_date());
         b.setStatus(bonsaiDTO.getStatus());
+        b.setOwner(OwnerMapper.ownerDTOToOwner(bonsaiDTO.getOwner()));
         return b;
     }
 
-    public static BonsaiDTO BonsaiToBonsaiDTO(Bonsai bonsai){
+    public static BonsaiDTO bonsaiToBonsaiDTO(Bonsai bonsai){
         if(bonsai == null){
             return null;
         }
@@ -50,7 +52,7 @@ public class BonsaiMapper {
         bonsaiDto.setLast_watering(bonsai.getWatering().stream().sorted(Comparator.comparing(Watering::getDatetime)).map(Watering::getDatetime).findFirst().orElse(null));
         if(bonsai.getRepotting()!=null)
         bonsaiDto.setLast_repotting(bonsai.getRepotting().stream().sorted(Comparator.comparing(Repotting::getDatetime)).map(Repotting::getDatetime).findFirst().orElse(null));
-
+        bonsaiDto.setOwner(OwnerMapper.ownerToOwnerDTO(bonsai.getOwner()));
         return bonsaiDto;
     }
 
@@ -63,11 +65,12 @@ public class BonsaiMapper {
         bonsai.setSpecies(bonsaiEntity.getSpecies());
         bonsai.setStatus(bonsaiEntity.getStatus());
         if(bonsaiEntity.getPruning() !=null)
-        bonsai.setPruning(bonsaiEntity.getPruning().stream().map(BonsaiMapper::PruningEntityToPruning).collect(Collectors.toList()));
+        bonsai.setPruning(bonsaiEntity.getPruning().stream().map(BonsaiMapper::pruningEntityToPruning).collect(Collectors.toList()));
         if(bonsaiEntity.getWatering() !=null)
-        bonsai.setWatering(bonsaiEntity.getWatering().stream().map(BonsaiMapper::WateringEntityToWatering).collect(Collectors.toList()));
+        bonsai.setWatering(bonsaiEntity.getWatering().stream().map(BonsaiMapper::wateringEntityToWatering).collect(Collectors.toList()));
         if(bonsaiEntity.getRepotting() !=null)
-        bonsai.setRepotting(bonsaiEntity.getRepotting().stream().map(BonsaiMapper::RepottingEntityToRepotting).collect(Collectors.toList()));
+        bonsai.setRepotting(bonsaiEntity.getRepotting().stream().map(BonsaiMapper::repottingEntityToRepotting).collect(Collectors.toList()));
+        bonsai.setOwner(OwnerMapper.ownerEntityToOwner(bonsaiEntity.getOwnerEntity()));
         return bonsai;
     }
     public static BonsaiEntity bonsaiToBonsaiEntity(Bonsai bonsai){
@@ -78,10 +81,12 @@ public class BonsaiMapper {
         bonsaiEntity.setAcquisition_age(bonsai.getAcquisition_age());
         bonsaiEntity.setSpecies(bonsai.getSpecies());
         bonsaiEntity.setStatus(bonsai.getStatus());
+        bonsaiEntity.setOwnerEntity(OwnerMapper.ownerToOwnerEntity(bonsai.getOwner()));
+
         return bonsaiEntity;
     }
 
-    public static Watering WateringEntityToWatering(WateringEntity wateringEntity){
+    public static Watering wateringEntityToWatering(WateringEntity wateringEntity){
         Watering watering = new Watering();
         watering.setId(wateringEntity.getId());
         watering.setDatetime(wateringEntity.getDatetime());
@@ -95,7 +100,7 @@ public class BonsaiMapper {
         return wateringEntity;
     }
 
-    public static Repotting RepottingEntityToRepotting(RepottingEntity repottingEntity){
+    public static Repotting repottingEntityToRepotting(RepottingEntity repottingEntity){
         Repotting repotting = new Repotting();
         repotting.setId(repottingEntity.getId());
         repotting.setDatetime(repottingEntity.getDatetime());
@@ -108,7 +113,7 @@ public class BonsaiMapper {
 //        repottingEntity.setDatetime(repotting.getDatetime());
 //        return repottingEntity;
 //    }
-    public static Pruning PruningEntityToPruning(PruningEntity pruningEntity){
+    public static Pruning pruningEntityToPruning(PruningEntity pruningEntity){
         Pruning pruning = new Pruning();
         pruning.setId(pruningEntity.getId());
         pruning.setDatetime(pruningEntity.getDatetime());
@@ -129,7 +134,7 @@ public class BonsaiMapper {
 //        return watering;
 //    }
 
-    public static WateringDTO WateringToWateringDTO(Watering watering){
+    public static WateringDTO wateringToWateringDTO(Watering watering){
         WateringDTO wateringDTO = new WateringDTO();
         wateringDTO.setId(watering.getId());
         wateringDTO.setDatetime(watering.getDatetime());
@@ -143,7 +148,7 @@ public class BonsaiMapper {
 //        return repotting;
 //    }
 
-    public static RepottingDTO RepottingToRepottingDTO(Repotting repotting){
+    public static RepottingDTO repottingToRepottingDTO(Repotting repotting){
         RepottingDTO repottingDTO = new RepottingDTO();
         repottingDTO.setId(repotting.getId());
         repottingDTO.setDatetime(repotting.getDatetime());
@@ -157,7 +162,7 @@ public class BonsaiMapper {
 //        return pruning;
 //    }
 
-    public static PruningDTO PruningToPruningDTO(Pruning pruning){
+    public static PruningDTO pruningToPruningDTO(Pruning pruning){
         PruningDTO pruningDTO = new PruningDTO();
         pruningDTO.setId(pruning.getId());
         pruningDTO.setDatetime(pruning.getDatetime());

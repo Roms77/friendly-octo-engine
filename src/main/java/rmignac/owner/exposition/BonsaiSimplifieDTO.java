@@ -1,16 +1,13 @@
 package rmignac.owner.exposition;
 
-import rmignac.bonsai.exposition.BonsaiDTO;
-
-import java.util.List;
 import java.util.UUID;
 
-public class OwnerDTO {
+public class BonsaiSimplifieDTO {
 
     private UUID id;
     private String name;
-    private List<BonsaiSimplifieDTO> bonsais;
-
+    private String species;
+    private int age;
 
     public UUID getId() {
         return id;
@@ -28,11 +25,19 @@ public class OwnerDTO {
         this.name = name;
     }
 
-    public List<BonsaiSimplifieDTO> getBonsais() {
-        return bonsais;
+    public String getSpecies() {
+        return species;
     }
 
-    public void setBonsais(List<BonsaiSimplifieDTO> bonsais) {
-        this.bonsais = bonsais;
+    public void setSpecies(String species) {
+        this.species = species;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }
