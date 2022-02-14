@@ -22,9 +22,6 @@ public interface BonsaiDAO extends JpaRepository<BonsaiEntity, UUID> {
     @Query("SELECT b FROM bonsai b WHERE b.acquisition_age >= :older_than")
     List<BonsaiEntity> findAllWithFilterWithoutStatus(@Param("older_than") int older_than, Sort sort);
 
-    //@Query("SELECT b FROM bonsai b WHERE b.nom = :nom")
     Optional<BonsaiEntity> findByNom(@Param("nom") String nom);
-
-
 
 }

@@ -2,6 +2,7 @@ package rmignac.bonsai.exposition;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rmignac.bonsai.BonsaiMapper;
 import rmignac.bonsai.domain.BonsaiService;
@@ -47,9 +48,8 @@ public class BonsaiController {
     public ResponseEntity<BonsaiDTO> getBonsaiById(@PathVariable String id){
         Optional<BonsaiDTO> bonsaiDto;
         bonsaiDto = bonsaiService.findByIdOrName(id).map(BonsaiMapper::bonsaiToBonsaiDTO);
-        if(bonsaiDto.isPresent()){
-            return ResponseEntity.ok(bonsaiDto.get());
-        }
+        if(bonsaiDto.isPresent()) return ResponseEntity.ok(bonsaiDto.get());
+
         return ResponseEntity.notFound().build();
     }
 
@@ -60,31 +60,32 @@ public class BonsaiController {
 
         BonsaiDTO resBonsaiDTO = BonsaiMapper.bonsaiToBonsaiDTO(bonsaiService.save(BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
 
-        if(resBonsaiDTO == null){
-            return ResponseEntity.badRequest().build();
-        }
+        if(resBonsaiDTO == null) return ResponseEntity.badRequest().build();
+
         return ResponseEntity.created(URI.create("/bonsai/"+resBonsaiDTO.getId())).build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<BonsaiDTO> update(@PathVariable UUID id, @RequestBody BonsaiDTO bonsaiDto){
         BonsaiDTO resBonsai = BonsaiMapper.bonsaiToBonsaiDTO(bonsaiService.update(id, BonsaiMapper.bonsaiDTOtoBonsai(bonsaiDto)));
-        if(resBonsai==null){
-            return ResponseEntity.notFound().build();
-        }
+
+        if(resBonsai==null) return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(resBonsai);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<BonsaiDTO> delete(@PathVariable UUID id){
 
-        if(!bonsaiService.delete(id)){
-            return ResponseEntity.notFound().build();
-        }
+        if(!bonsaiService.delete(id)) return ResponseEntity.notFound().build();
+
         return ResponseEntity.noContent().build();
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/status")
     public ResponseEntity<BonsaiDTO> changeStatus(@PathVariable UUID id, @RequestBody String status){
         BonsaiDTO resBonsai;
@@ -103,11 +104,12 @@ public class BonsaiController {
 
     @GetMapping("/{id}/pruning")
     public ResponseEntity<List<PruningDTO>> getAllPruning(@PathVariable UUID id){
-        List<PruningDTO> pruningDto = bonsaiService.getAllPruning(id).stream().map(BonsaiMapper::pruningToPruningDTO).collect(Collectors.toList());
+        List<PruningDTO> pruningDto = bonsaiService.getAllPruning(id).stream()
+                .map(BonsaiMapper::pruningToPruningDTO)
+                .collect(Collectors.toList());
 
-        if(pruningDto==null){
-            return ResponseEntity.notFound().build();
-        }
+        if(pruningDto.isEmpty()) return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(pruningDto);
     }
     @GetMapping("/{id}/repotting")
@@ -116,19 +118,19 @@ public class BonsaiController {
                 .map(BonsaiMapper::repottingToRepottingDTO)
                 .collect(Collectors.toList());
 
-        if(repottingDto==null){
-            return ResponseEntity.notFound().build();
-        }
+        if(repottingDto.isEmpty()) return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(repottingDto);
     }
     @GetMapping("/{id}/watering")
     public ResponseEntity<List<WateringDTO>> getAllWatering(@PathVariable UUID id){
 
-        List<WateringDTO> wateringDto = bonsaiService.getAllWatering(id).stream().map(BonsaiMapper::wateringToWateringDTO).collect(Collectors.toList());
+        List<WateringDTO> wateringDto = bonsaiService.getAllWatering(id).stream()
+                .map(BonsaiMapper::wateringToWateringDTO)
+                .collect(Collectors.toList());
 
-        if(wateringDto==null){
-            return ResponseEntity.notFound().build();
-        }
+        if(wateringDto.isEmpty()) return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(wateringDto);
     }
 

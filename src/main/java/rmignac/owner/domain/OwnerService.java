@@ -1,6 +1,8 @@
 package rmignac.owner.domain;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import rmignac.authentication.domain.AppUser;
 import rmignac.bonsai.domain.Bonsai;
 import rmignac.bonsai.infrastructure.BonsaiRepository;
 import rmignac.owner.exceptions.BonsaiNotExistException;
@@ -27,9 +29,8 @@ public class OwnerService {
     }
 
     public Owner create(Owner owner){
-        if(owner.getName()==null){
-            return null;
-        }
+        if(owner.getName()==null)  return null;
+
         return ownerRepository.create(owner);
     }
 
@@ -39,9 +40,8 @@ public class OwnerService {
 
     public Optional<List<BonsaiSimplifie>> getBonsaisByOwnerID(UUID id){
 
-        if(!ownerRepository.findById(id).isPresent()){
-            return Optional.empty();
-        }
+        if(!ownerRepository.findById(id).isPresent()) return Optional.empty();
+
         return ownerRepository.findById(id).map(Owner::getBonsais);
     }
 
@@ -52,6 +52,7 @@ public class OwnerService {
         Bonsai bonsai;
         Owner newOwner;
         Owner currentOwner;
+        AppUser credentials = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 
         if(!(optNewOwner.isPresent() && optCurrentOwner.isPresent())) throw new OwnerNotExistException();
@@ -64,7 +65,7 @@ public class OwnerService {
 
         bonsai = optBonsai.get();
 
-        if(!bonsai.getOwner().equals(currentOwner)) throw new UnautorizedException();
+        if((!bonsai.getOwner().equals(currentOwner)) || (credentials !=null && !credentials.getAuthorities().contains("ADMIN"))) throw new UnautorizedException();
 
         bonsai.setOwner(newOwner);
 
@@ -74,6 +75,7 @@ public class OwnerService {
 
     public Bonsai addBonsai(UUID newOwnerId, UUID bonsaiId) throws OwnerNotExistException, UnautorizedException, BonsaiNotExistException{
         Optional<Owner> optOwner = ownerRepository.findById(newOwnerId);
+        AppUser credentials = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Bonsai> optBonsai;
         Owner owner;
         Bonsai bonsai;
@@ -87,10 +89,15 @@ public class OwnerService {
 
         bonsai = optBonsai.get();
 
-        if(bonsai.getOwner()!=null) throw new UnautorizedException();
+        if((bonsai.getOwner()!=null) || (credentials !=null && !credentials.getAuthorities().contains("ADMIN"))) throw new UnautorizedException();
 
         bonsai.setOwner(owner);
 
         return bonsaiRepository.update(bonsai);
+    }
+
+    public void deleteOwner(UUID ownerId) {
+        Optional<Owner> owner = ownerRepository.findById(ownerId);
+        if (owner.isPresent()) ownerRepository.delete(owner.get());
     }
 }

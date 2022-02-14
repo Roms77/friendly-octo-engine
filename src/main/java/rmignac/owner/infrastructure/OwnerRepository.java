@@ -36,4 +36,7 @@ public class OwnerRepository {
         return OwnerMapper.ownerEntityToOwner(ownerDAO.save(OwnerMapper.ownerToOwnerEntity(owner)));
     }
 
+    public void delete(Owner owner){
+        ownerDAO.delete(OwnerMapper.ownerToOwnerEntity(owner));
+    }
 }
