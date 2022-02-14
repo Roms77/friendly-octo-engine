@@ -96,9 +96,9 @@ public class BonsaiDTO {
         this.last_repotting = last_repotting;
     }
 
-    public OwnerDTO getOwner() {
-        return owner;
-    }
+//    public OwnerDTO getOwner() {
+//        return owner;
+//    }
 
     public void setOwner(OwnerDTO owner) {
         this.owner = owner;

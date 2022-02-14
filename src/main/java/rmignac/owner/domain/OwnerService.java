@@ -1,18 +1,13 @@
 package rmignac.owner.domain;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import rmignac.bonsai.domain.Bonsai;
-import rmignac.bonsai.domain.BonsaiService;
-import rmignac.bonsai.infrastructure.BonsaiDAO;
 import rmignac.bonsai.infrastructure.BonsaiRepository;
-import rmignac.owner.OwnerMapper;
 import rmignac.owner.exceptions.BonsaiNotExistException;
 import rmignac.owner.exceptions.OwnerNotExistException;
 import rmignac.owner.exceptions.UnautorizedException;
 import rmignac.owner.infrastructure.OwnerRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,10 +23,7 @@ public class OwnerService {
     }
 
     public List<Owner> getOwners(int hasMore){
-
-        List<Owner> owners = ownerRepository.getOwners(hasMore);
-
-        return owners;
+        return ownerRepository.getOwners(hasMore);
     }
 
     public Owner create(Owner owner){
@@ -48,7 +40,7 @@ public class OwnerService {
     public Optional<List<BonsaiSimplifie>> getBonsaisByOwnerID(UUID id){
 
         if(!ownerRepository.findById(id).isPresent()){
-            return null;
+            return Optional.empty();
         }
         return ownerRepository.findById(id).map(Owner::getBonsais);
     }
@@ -72,7 +64,7 @@ public class OwnerService {
 
         bonsai = optBonsai.get();
 
-        if(!bonsai.getOwner().getId().equals(currentOwner.getId())) throw new UnautorizedException();
+        if(!bonsai.getOwner().equals(currentOwner)) throw new UnautorizedException();
 
         bonsai.setOwner(newOwner);
 

@@ -30,7 +30,7 @@ public class BonsaiMapper {
         b.setAcquisition_age(bonsaiDTO.getAcquisition_age());
         b.setAcquisition_date(bonsaiDTO.getAcquisition_date());
         b.setStatus(bonsaiDTO.getStatus());
-        b.setOwner(OwnerMapper.ownerDTOToOwner(bonsaiDTO.getOwner()));
+        //b.setOwner(OwnerMapper.ownerDTOToOwner(bonsaiDTO.getOwner()));
         return b;
     }
 
@@ -52,7 +52,7 @@ public class BonsaiMapper {
         bonsaiDto.setLast_watering(bonsai.getWatering().stream().sorted(Comparator.comparing(Watering::getDatetime)).map(Watering::getDatetime).findFirst().orElse(null));
         if(bonsai.getRepotting()!=null)
         bonsaiDto.setLast_repotting(bonsai.getRepotting().stream().sorted(Comparator.comparing(Repotting::getDatetime)).map(Repotting::getDatetime).findFirst().orElse(null));
-        bonsaiDto.setOwner(OwnerMapper.ownerToOwnerDTO(bonsai.getOwner()));
+        //bonsaiDto.setOwner(OwnerMapper.ownerToOwnerDTO(bonsai.getOwner()));
         return bonsaiDto;
     }
 

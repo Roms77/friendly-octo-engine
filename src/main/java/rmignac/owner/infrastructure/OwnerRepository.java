@@ -36,7 +36,4 @@ public class OwnerRepository {
         return OwnerMapper.ownerEntityToOwner(ownerDAO.save(OwnerMapper.ownerToOwnerEntity(owner)));
     }
 
-    public boolean haveOwner(UUID bonsaiId){
-        return !ownerDAO.findOwnerByBonsaiID(bonsaiId).isEmpty();
-    }
 }

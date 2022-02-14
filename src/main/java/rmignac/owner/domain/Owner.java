@@ -36,4 +36,13 @@ public class Owner {
     public void setBonsais(List<BonsaiSimplifie> bonsais) {
         this.bonsais = bonsais;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o instanceof Owner && this.id.equals(((Owner) o).id)) return true;
+
+
+        return false;
+    }
 }
